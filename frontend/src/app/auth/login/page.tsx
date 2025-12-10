@@ -1,12 +1,12 @@
 'use client';
 
-import { useState, useEffect, startTransition } from 'react';
+import { useState, useEffect, startTransition, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/auth-context';
 
-export default function LoginPage() {
+function LoginForm() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState<string | null>(null);
@@ -228,5 +228,21 @@ export default function LoginPage() {
                     </div>
                 </motion.div>
             </main>
+    );
+}
+
+export default function LoginPage() {
+    return (
+        <Suspense fallback={
+            <main className="flex min-h-screen items-center justify-center px-4 py-16">
+                <div className="w-full max-w-md">
+                    <div className="glass rounded-2xl p-8 border border-white/20">
+                        <div className="text-center text-gray-300">Loading...</div>
+                    </div>
+                </div>
+            </main>
+        }>
+            <LoginForm />
+        </Suspense>
     );
 }
