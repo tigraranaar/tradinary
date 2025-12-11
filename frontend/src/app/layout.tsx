@@ -4,6 +4,7 @@ import "./globals.css";
 import { AuthProvider } from "@/contexts/auth-context";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
+import CookieBanner from "@/components/cookie-banner";
 
 const poppins = Poppins({
     subsets: ["latin"],
@@ -29,8 +30,11 @@ export default function RootLayout({
             <body className={poppins.variable} suppressHydrationWarning>
                 <AuthProvider>
                     <Navbar />
-                    {children}
+                    <div className="pb-40">
+                        {children}
+                    </div>
                     <Footer />
+                    <CookieBanner />
                 </AuthProvider>
             </body>
         </html>
