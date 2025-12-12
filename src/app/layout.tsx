@@ -5,6 +5,7 @@ import { AuthProvider } from "@/contexts/auth-context";
 import Navbar from "@/components/navbar";
 import Footer from "@/components/footer";
 import CookieBanner from "@/components/cookie-banner";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -34,6 +35,7 @@ export default function RootLayout({
           <Footer />
           <CookieBanner />
         </AuthProvider>
+        <SpeedInsights />
       </body>
     </html>
   );
