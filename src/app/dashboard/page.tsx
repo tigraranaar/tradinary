@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { IoChevronDown, IoTrendingUp, IoTrendingDown, IoRemove, IoAlertCircle } from 'react-icons/io5';
 import { useAuth } from '@/contexts/auth-context';
-import { TradingPair, Timeframe, SignalResponse } from '@/types/trading';
+import { TradingPair, SignalResponse } from '@/types/trading';
 
 export default function DashboardPage() {
     const { session } = useAuth();
@@ -59,7 +59,7 @@ export default function DashboardPage() {
                 
                 // Set first timeframe as default
                 if (data.timeframes && data.timeframes.length > 0) {
-                    setSelectedTimeframe(data.timeframes[0] as Timeframe);
+                    setSelectedTimeframe(data.timeframes[0]);
                 }
             } catch (err) {
                 console.error('Error fetching pairs:', err);
@@ -265,7 +265,7 @@ export default function DashboardPage() {
                                         <button
                                             key={timeframe}
                                             onClick={() => {
-                                                setSelectedTimeframe(timeframe as Timeframe);
+                                                setSelectedTimeframe(timeframe);
                                                 setIsTimeframeOpen(false);
                                                 setSignal(null); // Reset signal when changing timeframe
                                             }}
