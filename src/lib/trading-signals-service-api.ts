@@ -5,15 +5,10 @@ import {
   TradingSignalsServicePairsResponse,
   TradingSignalsServiceSignalResponse,
 } from "@/types/trading";
+import { env } from "@/lib/env";
 
-const TRADING_SIGNALS_SERVICE_APIURL = process.env.TRADING_SIGNALS_SERVICE_API_URL;
-const TRADING_SIGNALS_SERVICE_APIKEY = process.env.TRADING_SIGNALS_SERVICE_API_KEY;
-
-if (!TRADING_SIGNALS_SERVICE_APIURL || !TRADING_SIGNALS_SERVICE_APIKEY) {
-  throw new Error(
-    "Missing required environment variables: TRADING_SIGNALS_SERVICE_API_URL and TRADING_SIGNALS_SERVICE_API_KEY"
-  );
-}
+const TRADING_SIGNALS_SERVICE_APIURL = env.TRADING_SIGNALS_SERVICE_API_URL;
+const TRADING_SIGNALS_SERVICE_APIKEY = env.TRADING_SIGNALS_SERVICE_API_KEY;
 
 async function tradingSignalsServiceApiFetch<T>(
   endpoint: string,
@@ -25,7 +20,7 @@ async function tradingSignalsServiceApiFetch<T>(
     ...options,
     headers: {
       "Content-Type": "application/json",
-      "X-API-Key": TRADING_SIGNALS_SERVICE_APIKEY!,
+      "X-API-Key": TRADING_SIGNALS_SERVICE_APIKEY,
       ...options.headers,
     },
   });

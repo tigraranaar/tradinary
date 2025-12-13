@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
+import { env } from "@/lib/env";
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -19,12 +20,8 @@ export async function middleware(request: NextRequest) {
   const isAuthRoute = authRoutes.some((route) => pathname.startsWith(route));
 
   // Create Supabase client for both checks
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-
-  if (!supabaseUrl || !supabaseAnonKey) {
-    throw new Error("Missing Supabase environment variables");
-  }
+  const supabaseUrl = env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseAnonKey = env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   // Create response object to handle cookies
   const response = NextResponse.next({
