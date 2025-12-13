@@ -4,6 +4,7 @@ import { FaCirclePlay } from "react-icons/fa6";
 import { motion } from "framer-motion";
 import { useAuth } from "@/contexts/auth-context";
 import { useRouter } from "next/navigation";
+import VideoBackground from "@/components/video-background";
 
 export default function HeroSection() {
   const { user, loading } = useAuth();
@@ -11,26 +12,7 @@ export default function HeroSection() {
 
   return (
     <>
-      <motion.div
-        className="pointer-events-none fixed inset-0 -z-20 overflow-hidden"
-        initial={{ opacity: 0.4 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5 }}
-      >
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="auto"
-          poster="/assets/bg-video-poster.webp"
-          className="absolute inset-0 h-full w-full object-cover opacity-30 blur-[5px]"
-        >
-          <source src="/assets/bg-video.webm" type="video/webm" />
-          <source src="/assets/bg-video.mp4" type="video/mp4" />
-        </video>
-      </motion.div>
+      <VideoBackground />
 
       <motion.section className="flex flex-col items-center">
         <motion.div
