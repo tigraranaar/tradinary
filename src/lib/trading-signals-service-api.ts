@@ -10,7 +10,9 @@ const TRADING_SIGNALS_SERVICE_APIURL = process.env.TRADING_SIGNALS_SERVICE_API_U
 const TRADING_SIGNALS_SERVICE_APIKEY = process.env.TRADING_SIGNALS_SERVICE_API_KEY;
 
 if (!TRADING_SIGNALS_SERVICE_APIURL || !TRADING_SIGNALS_SERVICE_APIKEY) {
-  console.warn("Trading Signals Service API credentials not configured");
+  throw new Error(
+    "Missing required environment variables: TRADING_SIGNALS_SERVICE_API_URL and TRADING_SIGNALS_SERVICE_API_KEY"
+  );
 }
 
 async function tradingSignalsServiceApiFetch<T>(
