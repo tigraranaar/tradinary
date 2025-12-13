@@ -1,8 +1,6 @@
-"use client";
 import { FaGithub, FaLinkedin, FaXTwitter, FaGlobe } from "react-icons/fa6";
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "framer-motion";
 
 export default function Footer() {
   const links = [
@@ -12,13 +10,7 @@ export default function Footer() {
     { name: "Cookie Policy", href: "/cookies" },
   ];
   return (
-    <motion.footer
-      className="glass flex w-full flex-col items-center justify-center border-0 px-4 pt-16 md:px-16 lg:px-24"
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5 }}
-    >
+    <footer className="glass flex w-full flex-col items-center justify-center border-0 px-4 pt-16 md:px-16 lg:px-24">
       <Image
         src="/assets/logo.svg"
         alt="logo"
@@ -55,6 +47,6 @@ export default function Footer() {
         <p>Trade with your AI assistant</p>
         <p>Copyright © 2026 Tradinary. All rights reservered.</p>
       </div>
-    </motion.footer>
+    </footer>
   );
 }

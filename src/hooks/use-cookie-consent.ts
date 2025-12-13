@@ -1,20 +1,31 @@
 "use client";
-import { useState, useCallback } from "react";
+import { useSyncExternalStore, useCallback } from "react";
+
+function subscribe(callback: () => void) {
+  window.addEventListener("storage", callback);
+  return () => window.removeEventListener("storage", callback);
+}
+
+function getSnapshot() {
+  return localStorage.getItem("cookieConsent");
+}
+
+function getServerSnapshot() {
+  return null;
+}
 
 export function useCookieConsent() {
-  const [consent, setConsent] = useState<boolean | null>(() => {
-    if (typeof window === "undefined") return null;
-    return localStorage.getItem("cookieConsent") !== null;
-  });
+  const consentValue = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
+  const consent = consentValue !== null;
 
   const acceptCookies = useCallback(() => {
     localStorage.setItem("cookieConsent", "accepted");
-    setConsent(true);
+    window.dispatchEvent(new Event("storage"));
   }, []);
 
   const declineCookies = useCallback(() => {
     localStorage.setItem("cookieConsent", "declined");
-    setConsent(true);
+    window.dispatchEvent(new Event("storage"));
   }, []);
 
   return { consent, acceptCookies, declineCookies };

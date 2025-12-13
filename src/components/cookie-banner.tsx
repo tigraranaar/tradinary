@@ -7,14 +7,13 @@ import { useCookieConsent } from "@/hooks/use-cookie-consent";
 export default function CookieBanner() {
   const { consent, acceptCookies, declineCookies } = useCookieConsent();
 
-  // Don't show banner if user already made a choice
-  if (consent !== false) {
+  if (consent) {
     return null;
   }
 
   return (
     <AnimatePresence>
-      {consent === false && (
+      {!consent && (
         <motion.div
           initial={{ y: 100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}

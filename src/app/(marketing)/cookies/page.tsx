@@ -1,17 +1,10 @@
-"use client";
-
-import { motion } from "framer-motion";
 import Link from "next/link";
 
 export default function CookiePolicyPage() {
   return (
     <main className="min-h-screen px-4 md:px-16 lg:px-24">
       <div className="mx-auto max-w-4xl py-20">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
+        <div>
           <h1 className="mb-4 text-4xl font-semibold md:text-5xl">Cookie Policy — Tradinary</h1>
           <p className="mb-8 text-gray-400">Last updated: December 10, 2025</p>
 
@@ -118,7 +111,7 @@ export default function CookiePolicyPage() {
               </p>
             </section>
           </div>
-        </motion.div>
+        </div>
       </div>
     </main>
   );

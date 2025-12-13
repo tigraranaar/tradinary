@@ -1,5 +1,3 @@
-"use client";
-
 import CallToAction from "@/sections/call-to-action";
 import FaqSection from "@/sections/faq-section";
 import Features from "@/sections/features";
