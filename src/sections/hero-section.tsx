@@ -23,8 +23,11 @@ export default function HeroSection() {
           loop
           muted
           playsInline
+          preload="auto"
+          poster="/assets/bg-video-poster.webp"
           className="absolute inset-0 h-full w-full object-cover opacity-30 blur-[5px]"
         >
+          <source src="/assets/bg-video.webm" type="video/webm" />
           <source src="/assets/bg-video.mp4" type="video/mp4" />
         </video>
       </motion.div>
