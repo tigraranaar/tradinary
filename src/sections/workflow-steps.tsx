@@ -77,6 +77,7 @@ export default function WorkflowSteps() {
               className="h-auto w-full max-w-sm flex-1 rounded-2xl"
               width={400}
               height={300}
+              style={{ height: "auto" }}
             />
             <div key={index} className="flex max-w-md flex-1 flex-col gap-6 md:px-6">
               <h3 className="text-2xl font-medium text-white">{step.title}</h3>
