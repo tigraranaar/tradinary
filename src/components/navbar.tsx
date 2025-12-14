@@ -16,7 +16,11 @@ export default function Navbar() {
   const router = useRouter();
   const { user, signOut, loading } = useAuth();
 
-  const links = [{ name: "Dashboard", href: "/dashboard" }];
+  const publicLinks = [
+    { name: "Contact", href: "/contact" },
+    { name: "FAQ", href: "/faq" },
+  ];
+  const privateLinks = [{ name: "Dashboard", href: "/dashboard" }];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -86,9 +90,14 @@ export default function Navbar() {
         </Link>
 
         <div className="hidden items-center space-x-10 md:flex" suppressHydrationWarning>
+          {publicLinks.map((link) => (
+            <Link key={link.name} href={link.href} className="transition hover:text-gray-300">
+              {link.name}
+            </Link>
+          ))}
           {!loading &&
             user &&
-            links.map((link) => (
+            privateLinks.map((link) => (
               <Link key={link.name} href={link.href} className="transition hover:text-gray-300">
                 {link.name}
               </Link>
@@ -144,9 +153,14 @@ export default function Navbar() {
         className={`fixed inset-0 z-50 flex flex-col items-center justify-center gap-6 bg-black/20 text-lg font-medium backdrop-blur-2xl transition duration-300 md:hidden ${isOpen ? "translate-x-0" : "-translate-x-full"}`}
         suppressHydrationWarning
       >
+        {publicLinks.map((link) => (
+          <Link key={link.name} href={link.href} onClick={() => setIsOpen(false)}>
+            {link.name}
+          </Link>
+        ))}
         {!loading &&
           user &&
-          links.map((link) => (
+          privateLinks.map((link) => (
             <Link key={link.name} href={link.href} onClick={() => setIsOpen(false)}>
               {link.name}
             </Link>

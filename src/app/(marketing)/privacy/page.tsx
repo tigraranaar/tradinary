@@ -1,4 +1,16 @@
 import Link from "next/link";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Privacy Policy | Tradinary",
+  description:
+    "Read Tradinary's Privacy Policy. Learn how we collect, use, and protect your personal information when you use our AI trading assistant platform.",
+  openGraph: {
+    title: "Privacy Policy | Tradinary",
+    description:
+      "Read Tradinary's Privacy Policy. Learn how we collect, use, and protect your personal information when you use our AI trading assistant platform.",
+  },
+};
 
 export default function PrivacyPolicyPage() {
   return (

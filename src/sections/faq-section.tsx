@@ -1,44 +1,15 @@
 "use client";
 
 import SectionTitle from "@/components/section-title";
-import { FaChevronDown } from "react-icons/fa6";
+import { FaChevronDown, FaArrowRight } from "react-icons/fa6";
 import { useState } from "react";
 import { motion } from "framer-motion";
+import Link from "next/link";
+import { faqData } from "@/data/faq";
 
 export default function FaqSection() {
   const [isOpen, setIsOpen] = useState<number | null>(null);
-  const data = [
-    {
-      question: "How does the free version work?",
-      answer:
-        "The free version provides comprehensive technical analysis to generate buy, sell, and hold trading signals. You get access to full technical indicators and market analysis tools.",
-    },
-    {
-      question: "What is included in the Pro version?",
-      answer:
-        "Pro version includes everything from the free plan plus our advanced machine learning model that enhances signal accuracy with predictive insights and improved trading recommendations.",
-    },
-    {
-      question: "What makes Premium different from Pro?",
-      answer:
-        "Premium includes technical analysis, ML-powered signals, plus multiple AI models working together to provide comprehensive market intelligence and the most accurate trading signals.",
-    },
-    {
-      question: "How accurate are the trading signals?",
-      answer:
-        "Signal accuracy improves with each tier. Free version uses technical analysis, Pro adds ML model predictions, and Premium combines multiple AI models for the highest accuracy.",
-    },
-    {
-      question: "Do I need trading experience to use Tradinary?",
-      answer:
-        "No prior trading experience is required. Our AI assistant provides clear buy/sell/hold signals that are easy to understand, making it suitable for both beginners and experienced traders.",
-    },
-    {
-      question: "Can I try Tradinary before subscribing?",
-      answer:
-        "Yes, you can start with our free version that includes full technical analysis and trading signals. Upgrade to Pro or Premium anytime to unlock advanced features.",
-    },
-  ];
+  const displayedFaqs = faqData.slice(0, 3);
 
   return (
     <section className="mt-32">
@@ -47,7 +18,7 @@ export default function FaqSection() {
         description="Have questions about Tradinary? Find answers to common questions about our AI trading assistant and subscription plans."
       />
       <div className="mx-auto mt-12 w-full max-w-xl space-y-4">
-        {data.map((item, index) => (
+        {displayedFaqs.map((item, index) => (
           <motion.div
             key={index}
             className="glass flex flex-col rounded-md"
@@ -78,6 +49,12 @@ export default function FaqSection() {
             </p>
           </motion.div>
         ))}
+      </div>
+      <div className="mt-8 flex justify-center">
+        <Link href="/faq" className="btn glass flex items-center gap-2 transition-none">
+          See More FAQs
+          <FaArrowRight className="size-4" />
+        </Link>
       </div>
     </section>
   );

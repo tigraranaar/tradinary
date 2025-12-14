@@ -1,5 +1,15 @@
 import Link from "next/link";
 import { FaHome } from "react-icons/fa";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "404 — Page Not Found | Tradinary",
+  description: "The page you're looking for doesn't exist or has been moved.",
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
 
 export default function NotFound() {
   return (

@@ -5,6 +5,7 @@ import Image from "next/image";
 export default function Footer() {
   const links = [
     { name: "Contact", href: "/contact" },
+    { name: "FAQ", href: "/faq" },
     { name: "Terms of Use", href: "/terms" },
     { name: "Privacy Policy", href: "/privacy" },
     { name: "Cookie Policy", href: "/cookies" },
