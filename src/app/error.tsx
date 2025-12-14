@@ -53,15 +53,6 @@ export default function Error({
             Go Home
           </Link>
         </div>
-
-        {/* Error Details (only in development) */}
-        {process.env.NODE_ENV === "development" && error.digest && (
-          <div className="mt-8 rounded-lg border border-red-500/30 bg-red-500/10 p-4 text-left">
-            <p className="text-xs text-red-300">
-              <strong>Error Digest:</strong> {error.digest}
-            </p>
-          </div>
-        )}
       </div>
     </main>
   );

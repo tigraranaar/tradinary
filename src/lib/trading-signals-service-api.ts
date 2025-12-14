@@ -5,7 +5,7 @@ import {
   TradingSignalsServicePairsResponse,
   TradingSignalsServiceSignalResponse,
 } from "@/types/trading";
-import { env } from "@/lib/env";
+import { env } from "@/lib/env/server";
 
 const TRADING_SIGNALS_SERVICE_APIURL = env.TRADING_SIGNALS_SERVICE_API_URL;
 const TRADING_SIGNALS_SERVICE_APIKEY = env.TRADING_SIGNALS_SERVICE_API_KEY;

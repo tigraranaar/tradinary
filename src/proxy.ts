@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
-import { env } from "@/lib/env";
+import { env } from "@/lib/env/server";
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
