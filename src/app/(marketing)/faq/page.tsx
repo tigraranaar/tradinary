@@ -2,6 +2,7 @@ import { faqData } from "@/data/faq";
 import Link from "next/link";
 import { FaArrowRight } from "react-icons/fa6";
 import { Metadata } from "next";
+import PageTitle from "@/components/page-title";
 
 const PREVIEW_LENGTH = 150;
 
@@ -27,13 +28,10 @@ export default function FAQPage() {
   return (
     <main className="min-h-screen px-4 md:px-16 lg:px-24">
       <div className="mx-auto max-w-4xl py-20">
-        <header>
-          <h1 className="mb-4 text-4xl font-semibold md:text-5xl">FAQ — Tradinary</h1>
-          <p className="mb-8 text-gray-400">
-            Everything you need to know about Tradinary. Can&apos;t find what you&apos;re looking
-            for? Contact our support team.
-          </p>
-        </header>
+        <PageTitle
+          title="FAQ — Tradinary"
+          subtitle="Everything you need to know about Tradinary. Can't find what you're looking for? Contact our support team."
+        />
 
         <section className="mt-12 space-y-4" aria-label="Frequently asked questions">
           {faqData.map((item) => (

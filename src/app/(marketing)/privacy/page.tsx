@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Metadata } from "next";
+import PageTitle from "@/components/page-title";
 
 export const metadata: Metadata = {
   title: "Privacy Policy | Tradinary",
@@ -17,8 +18,10 @@ export default function PrivacyPolicyPage() {
     <main className="min-h-screen px-4 md:px-16 lg:px-24">
       <div className="mx-auto max-w-4xl py-20">
         <div>
-          <h1 className="mb-4 text-4xl font-semibold md:text-5xl">Privacy Policy — Tradinary</h1>
-          <p className="mb-8 text-gray-400">Last updated: December 10, 2025</p>
+          <PageTitle
+            title="Privacy Policy — Tradinary"
+            subtitle="Last updated: December 10, 2025"
+          />
 
           <div className="glass space-y-8 rounded-lg p-8 text-gray-300 md:p-12">
             {/* Introduction */}

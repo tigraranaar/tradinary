@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useState } from "react";
+import PageTitle from "@/components/page-title";
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -67,12 +68,11 @@ export default function ContactPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="mb-16 text-center"
         >
-          <h1 className="mb-4 text-4xl font-semibold md:text-5xl">Get in Touch</h1>
-          <p className="mx-auto max-w-2xl text-lg text-gray-300">
-            Have a question or want to work together? We&apos;d love to hear from you.
-          </p>
+          <PageTitle
+            title="Get in Touch"
+            subtitle="Have a question or want to work together? We'd love to hear from you."
+          />
         </motion.div>
 
         <div className="flex justify-center">
