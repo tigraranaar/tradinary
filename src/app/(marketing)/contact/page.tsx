@@ -1,65 +1,40 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useActionState, useEffect, useRef } from "react";
+import { useFormStatus } from "react-dom";
 import PageTitle from "@/components/page-title";
+import { submitContactForm, type ContactFormState } from "@/app/actions/contact";
+
+function SubmitButton() {
+  const { pending } = useFormStatus();
+
+  return (
+    <motion.button
+      type="submit"
+      disabled={pending}
+      className="btn glass w-full py-3 disabled:cursor-not-allowed disabled:opacity-50"
+      whileHover={!pending ? { scale: 1.02 } : {}}
+      whileTap={!pending ? { scale: 0.98 } : {}}
+    >
+      {pending ? "Sending..." : "Send Message"}
+    </motion.button>
+  );
+}
 
 export default function ContactPage() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    subject: "",
-    message: "",
-  });
-  const [isLoading, setIsLoading] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<{
-    type: "success" | "error" | null;
-    message: string;
-  }>({ type: null, message: "" });
+  const [state, formAction] = useActionState<ContactFormState | null, FormData>(
+    submitContactForm,
+    null
+  );
+  const formRef = useRef<HTMLFormElement>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setSubmitStatus({ type: null, message: "" });
-
-    try {
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || "Failed to send message");
-      }
-
-      setSubmitStatus({
-        type: "success",
-        message: data.message || "Thank you for your message! We will get back to you soon.",
-      });
-      setFormData({ name: "", email: "", subject: "", message: "" });
-    } catch (error) {
-      console.error("Error submitting form:", error);
-      setSubmitStatus({
-        type: "error",
-        message:
-          error instanceof Error ? error.message : "Something went wrong. Please try again later.",
-      });
-    } finally {
-      setIsLoading(false);
+  // Reset form on success
+  useEffect(() => {
+    if (state?.success) {
+      formRef.current?.reset();
     }
-  };
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
+  }, [state?.success]);
 
   return (
     <main className="min-h-screen px-4 md:px-16 lg:px-24">
@@ -83,7 +58,7 @@ export default function ContactPage() {
             transition={{ duration: 0.5, delay: 0.3 }}
             className="w-full max-w-2xl"
           >
-            <form onSubmit={handleSubmit} className="glass space-y-6 rounded-lg p-8">
+            <form ref={formRef} action={formAction} className="glass space-y-6 rounded-lg p-8">
               <div>
                 <label htmlFor="name" className="mb-2 block text-sm font-medium">
                   Name
@@ -92,12 +67,17 @@ export default function ContactPage() {
                   type="text"
                   id="name"
                   name="name"
-                  value={formData.name}
-                  onChange={handleChange}
                   required
                   className="w-full rounded-lg border border-white/20 bg-white/5 px-4 py-3 transition focus:ring-2 focus:ring-white/30 focus:outline-none"
                   placeholder="Your name"
+                  aria-invalid={state?.errors?.name ? "true" : "false"}
+                  aria-describedby={state?.errors?.name ? "name-error" : undefined}
                 />
+                {state?.errors?.name && (
+                  <p id="name-error" className="mt-1 text-sm text-red-400">
+                    {state.errors.name[0]}
+                  </p>
+                )}
               </div>
 
               <div>
@@ -108,12 +88,17 @@ export default function ContactPage() {
                   type="email"
                   id="email"
                   name="email"
-                  value={formData.email}
-                  onChange={handleChange}
                   required
                   className="w-full rounded-lg border border-white/20 bg-white/5 px-4 py-3 transition focus:ring-2 focus:ring-white/30 focus:outline-none"
                   placeholder="your.email@example.com"
+                  aria-invalid={state?.errors?.email ? "true" : "false"}
+                  aria-describedby={state?.errors?.email ? "email-error" : undefined}
                 />
+                {state?.errors?.email && (
+                  <p id="email-error" className="mt-1 text-sm text-red-400">
+                    {state.errors.email[0]}
+                  </p>
+                )}
               </div>
 
               <div>
@@ -124,12 +109,17 @@ export default function ContactPage() {
                   type="text"
                   id="subject"
                   name="subject"
-                  value={formData.subject}
-                  onChange={handleChange}
                   required
                   className="w-full rounded-lg border border-white/20 bg-white/5 px-4 py-3 transition focus:ring-2 focus:ring-white/30 focus:outline-none"
                   placeholder="What is this about?"
+                  aria-invalid={state?.errors?.subject ? "true" : "false"}
+                  aria-describedby={state?.errors?.subject ? "subject-error" : undefined}
                 />
+                {state?.errors?.subject && (
+                  <p id="subject-error" className="mt-1 text-sm text-red-400">
+                    {state.errors.subject[0]}
+                  </p>
+                )}
               </div>
 
               <div>
@@ -139,36 +129,43 @@ export default function ContactPage() {
                 <textarea
                   id="message"
                   name="message"
-                  value={formData.message}
-                  onChange={handleChange}
                   required
                   rows={6}
                   className="w-full resize-none rounded-lg border border-white/20 bg-white/5 px-4 py-3 transition focus:ring-2 focus:ring-white/30 focus:outline-none"
                   placeholder="Your message..."
+                  aria-invalid={state?.errors?.message ? "true" : "false"}
+                  aria-describedby={state?.errors?.message ? "message-error" : undefined}
                 />
+                {state?.errors?.message && (
+                  <p id="message-error" className="mt-1 text-sm text-red-400">
+                    {state.errors.message[0]}
+                  </p>
+                )}
               </div>
 
-              {submitStatus.type && (
+              {state?.message && (
                 <div
                   className={`rounded-lg p-4 ${
-                    submitStatus.type === "success"
+                    state.success
                       ? "border border-green-500/30 bg-green-500/20 text-green-300"
                       : "border border-red-500/30 bg-red-500/20 text-red-300"
                   }`}
+                  role="alert"
                 >
-                  {submitStatus.message}
+                  {state.message}
                 </div>
               )}
 
-              <motion.button
-                type="submit"
-                disabled={isLoading}
-                className="btn glass w-full py-3 disabled:cursor-not-allowed disabled:opacity-50"
-                whileHover={!isLoading ? { scale: 1.02 } : {}}
-                whileTap={!isLoading ? { scale: 0.98 } : {}}
-              >
-                {isLoading ? "Sending..." : "Send Message"}
-              </motion.button>
+              {state?.errors?._form && (
+                <div
+                  className="rounded-lg border border-red-500/30 bg-red-500/20 p-4 text-red-300"
+                  role="alert"
+                >
+                  {state.errors._form[0]}
+                </div>
+              )}
+
+              <SubmitButton />
             </form>
           </motion.div>
         </div>
