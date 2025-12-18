@@ -21,36 +21,21 @@ export interface TradingSignalsServicePairsResponse {
   total_pairs: number;
 }
 
-export interface SignalIndicators {
-  rsi?: number;
-  macd?: number;
-  macd_signal?: number;
-  macd_histogram?: number;
-  sma_20?: number;
-  sma_50?: number;
-  sma_200?: number;
-  ema_12?: number;
-  ema_26?: number;
-  bb_upper?: number;
-  bb_middle?: number;
-  bb_lower?: number;
-  volume?: number;
-  [key: string]: number | undefined;
-}
-
 export interface TradingSignalsServiceSignalResponse {
-  pair: string;
+  symbol: string;
   timeframe: string;
-  signal: "BUY" | "SELL" | "HOLD" | "NEUTRAL";
-  confidence?: number;
-  price?: number;
-  timestamp?: string;
-  indicators?: SignalIndicators;
-  recommendation?: string;
-  analysis?: string;
+  signal: "buy" | "sell" | "hold";
+  timestamp: string;
+  indicators: Record<string, number | null>;
 }
 
-export type SignalResponse = TradingSignalsServiceSignalResponse;
+export interface SignalResponse {
+  symbol: string;
+  timeframe: string;
+  signal: "buy" | "sell" | "hold";
+  timestamp: string;
+  indicators: Record<string, number | null>;
+}
 
 export interface ApiError {
   error: string;

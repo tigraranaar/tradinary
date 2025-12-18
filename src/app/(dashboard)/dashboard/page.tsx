@@ -331,11 +331,6 @@ export default function DashboardPage() {
                     {signal.signal}
                   </p>
                 </div>
-                {signal.confidence !== undefined && (
-                  <p className="mt-2 text-sm text-white/60">
-                    Confidence: {(signal.confidence * 100).toFixed(1)}%
-                  </p>
-                )}
               </div>
 
               {/* Details */}
@@ -343,19 +338,13 @@ export default function DashboardPage() {
                 <p className="mb-2 text-sm text-white/60">Details</p>
                 <div className="space-y-2">
                   <div className="flex justify-between">
-                    <span className="text-white/60">Pair:</span>
-                    <span className="font-semibold">{signal.pair}</span>
+                    <span className="text-white/60">Symbol:</span>
+                    <span className="font-semibold">{signal.symbol}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-white/60">Timeframe:</span>
                     <span className="font-semibold">{signal.timeframe}</span>
                   </div>
-                  {signal.price !== undefined && (
-                    <div className="flex justify-between">
-                      <span className="text-white/60">Price:</span>
-                      <span className="font-semibold">${signal.price.toLocaleString()}</span>
-                    </div>
-                  )}
                   {signal.timestamp && (
                     <div className="flex justify-between">
                       <span className="text-white/60">Time:</span>
@@ -368,31 +357,44 @@ export default function DashboardPage() {
               </div>
             </div>
 
-            {/* Analysis/Recommendation */}
-            {(signal.analysis || signal.recommendation) && (
-              <div className="glass mt-6 rounded-xl p-6 backdrop-blur-lg">
-                <h3 className="mb-3 text-lg font-semibold">
-                  {signal.analysis ? "Analysis" : "Recommendation"}
-                </h3>
-                <p className="leading-relaxed text-white/80">
-                  {signal.analysis || signal.recommendation}
-                </p>
-              </div>
-            )}
-
-            {/* Indicators */}
+            {/* Indicators Table */}
             {signal.indicators && Object.keys(signal.indicators).length > 0 && (
               <div className="glass mt-6 rounded-xl p-6 backdrop-blur-lg">
-                <h3 className="mb-3 text-lg font-semibold">Technical Indicators</h3>
-                <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
-                  {Object.entries(signal.indicators).map(([key, value]) => (
-                    <div key={key} className="rounded-lg bg-white/5 p-3">
-                      <p className="mb-1 text-xs text-white/60">{key.toUpperCase()}</p>
-                      <p className="font-semibold">
-                        {typeof value === "number" ? value.toFixed(2) : String(value)}
-                      </p>
-                    </div>
-                  ))}
+                <h3 className="mb-4 text-lg font-semibold">
+                  Technical Indicators ({Object.keys(signal.indicators).length})
+                </h3>
+                <div className="max-h-[500px] overflow-auto">
+                  <table className="w-full">
+                    <thead className="sticky top-0 bg-[#190029]">
+                      <tr className="border-b border-white/10">
+                        <th className="px-4 py-3 text-left text-sm font-medium text-white/60">
+                          Indicator
+                        </th>
+                        <th className="px-4 py-3 text-right text-sm font-medium text-white/60">
+                          Value
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {Object.entries(signal.indicators)
+                        .sort(([a], [b]) => a.localeCompare(b))
+                        .map(([key, value]) => (
+                          <tr
+                            key={key}
+                            className="border-b border-white/5 transition-colors hover:bg-white/5"
+                          >
+                            <td className="px-4 py-2 text-sm font-medium">{key}</td>
+                            <td className="px-4 py-2 text-right font-mono text-sm">
+                              {value === null ? (
+                                <span className="text-white/30">N/A</span>
+                              ) : (
+                                value.toFixed(4)
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                    </tbody>
+                  </table>
                 </div>
               </div>
             )}
