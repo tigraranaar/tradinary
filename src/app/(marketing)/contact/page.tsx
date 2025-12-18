@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { useActionState, useEffect, useRef } from "react";
 import { useFormStatus } from "react-dom";
 import PageTitle from "@/components/page-title";
@@ -10,15 +9,13 @@ function SubmitButton() {
   const { pending } = useFormStatus();
 
   return (
-    <motion.button
+    <button
       type="submit"
       disabled={pending}
       className="btn glass w-full py-3 disabled:cursor-not-allowed disabled:opacity-50"
-      whileHover={!pending ? { scale: 1.02 } : {}}
-      whileTap={!pending ? { scale: 0.98 } : {}}
     >
       {pending ? "Sending..." : "Send Message"}
-    </motion.button>
+    </button>
   );
 }
 
@@ -39,25 +36,16 @@ export default function ContactPage() {
   return (
     <main className="min-h-screen px-4 md:px-16 lg:px-24">
       <div className="mx-auto max-w-6xl py-20">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
+        <div>
           <PageTitle
             title="Get in Touch"
             subtitle="Have a question or want to work together? We'd love to hear from you."
           />
-        </motion.div>
+        </div>
 
         <div className="flex justify-center">
           {/* Contact Form */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="w-full max-w-2xl"
-          >
+          <div className="w-full max-w-2xl">
             <form ref={formRef} action={formAction} className="glass space-y-6 rounded-lg p-8">
               <div>
                 <label htmlFor="name" className="mb-2 block text-sm font-medium">
@@ -167,7 +155,7 @@ export default function ContactPage() {
 
               <SubmitButton />
             </form>
-          </motion.div>
+          </div>
         </div>
       </div>
     </main>
