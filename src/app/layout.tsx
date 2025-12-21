@@ -16,7 +16,8 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   title: "Tradinary - Trade with your AI assistant",
-  description: "Trade with your AI assistant.",
+  description:
+    "Trade smarter with Tradinary's AI-powered trading signals. Get real-time market analysis, automated signals, and intelligent insights to enhance your trading strategy.",
   appleWebApp: {
     title: "Tradinary - Trade with your AI assistant",
   },

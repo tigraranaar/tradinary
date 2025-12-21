@@ -1,8 +1,5 @@
-"use client";
-
 import SectionTitle from "@/components/section-title";
 import { FaChartLine, FaBrain, FaRobot, FaBolt } from "react-icons/fa6";
-import { motion } from "framer-motion";
 
 export default function Features() {
   const featuresData = [
@@ -39,24 +36,14 @@ export default function Features() {
 
       <div className="mt-10 flex flex-wrap items-center justify-center gap-6 px-6">
         {featuresData.map((feature, index) => (
-          <motion.div
+          <div
             key={index}
             className="glass w-full max-w-80 space-y-4 rounded-xl p-6 transition duration-300 hover:-translate-y-0.5"
-            initial={{ y: 150, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{
-              delay: index * 0.15,
-              type: "spring",
-              stiffness: 320,
-              damping: 70,
-              mass: 1,
-            }}
           >
             <feature.icon className="size-8.5" />
             <h3 className="text-base font-medium text-white">{feature.title}</h3>
             <p className="text-sm leading-relaxed text-gray-100">{feature.description}</p>
-          </motion.div>
+          </div>
         ))}
       </div>
     </section>

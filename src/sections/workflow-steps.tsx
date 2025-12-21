@@ -1,6 +1,3 @@
-"use client";
-
-import { motion } from "framer-motion";
 import SectionTitle from "@/components/section-title";
 import Image from "next/image";
 
@@ -36,13 +33,7 @@ export default function WorkflowSteps() {
         description="Get AI-powered trading signals in three simple steps. From selecting a pair to executing trades and maximizing your profits."
       />
 
-      <motion.div
-        className="relative mt-20 space-y-20 md:space-y-30"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5 }}
-      >
+      <div className="relative mt-20 space-y-20 md:space-y-30">
         <div className="absolute left-1/2 hidden -translate-x-1/2 flex-col items-center md:flex">
           <div className="my-10 flex aspect-square items-center justify-center rounded-full bg-black/15 p-2 font-medium">
             01
@@ -57,19 +48,9 @@ export default function WorkflowSteps() {
           </div>
         </div>
         {steps.map((step, index) => (
-          <motion.div
+          <div
             key={index}
             className={`flex items-center justify-center gap-6 md:gap-20 ${index % 2 !== 0 ? "flex-col md:flex-row-reverse" : "flex-col md:flex-row"}`}
-            initial={{ y: 150, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{
-              delay: index * 0.15,
-              type: "spring",
-              stiffness: 320,
-              damping: 70,
-              mass: 1,
-            }}
           >
             <Image
               src={step.image}
@@ -83,9 +64,9 @@ export default function WorkflowSteps() {
               <h3 className="text-2xl font-medium text-white">{step.title}</h3>
               <p className="line-clamp-3 pb-2 text-sm/6 text-gray-100">{step.description}</p>
             </div>
-          </motion.div>
+          </div>
         ))}
-      </motion.div>
+      </div>
     </section>
   );
 }

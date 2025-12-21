@@ -1,8 +1,5 @@
-"use client";
-
 import SectionTitle from "@/components/section-title";
 import { FaCheck, FaCrown, FaGift, FaBolt } from "react-icons/fa6";
-import { motion } from "framer-motion";
 import Link from "next/link";
 
 export default function PricingPlans() {
@@ -64,19 +61,9 @@ export default function PricingPlans() {
 
       <div className="mt-12 flex flex-wrap items-center justify-center gap-6">
         {data.map((item, index) => (
-          <motion.div
+          <div
             key={index}
             className="group glass w-full max-w-80 rounded-xl p-6 transition duration-300 hover:-translate-y-0.5"
-            initial={{ y: 150, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{
-              delay: index * 0.15,
-              type: "spring",
-              stiffness: 320,
-              damping: 70,
-              mass: 1,
-            }}
           >
             <div className="glass ml-auto flex w-max items-center gap-2 rounded-full px-3 py-1 text-xs">
               <item.icon className="size-3.5" />
@@ -116,7 +103,7 @@ export default function PricingPlans() {
                 </div>
               ))}
             </div>
-          </motion.div>
+          </div>
         ))}
       </div>
     </section>

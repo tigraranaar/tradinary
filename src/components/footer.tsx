@@ -30,16 +30,32 @@ export default function Footer() {
         ))}
       </div>
       <div className="flex items-center gap-6 pb-6">
-        <a href="#" className="text-gray-200 transition-all duration-300 hover:-translate-y-0.5">
+        <a
+          href="#"
+          aria-label="Visit our website"
+          className="text-gray-200 transition-all duration-300 hover:-translate-y-0.5"
+        >
           <FaGlobe />
         </a>
-        <a href="#" className="text-gray-200 transition-all duration-300 hover:-translate-y-0.5">
+        <a
+          href="#"
+          aria-label="Follow us on LinkedIn"
+          className="text-gray-200 transition-all duration-300 hover:-translate-y-0.5"
+        >
           <FaLinkedin />
         </a>
-        <a href="#" className="text-gray-200 transition-all duration-300 hover:-translate-y-0.5">
+        <a
+          href="#"
+          aria-label="Follow us on X (Twitter)"
+          className="text-gray-200 transition-all duration-300 hover:-translate-y-0.5"
+        >
           <FaXTwitter />
         </a>
-        <a href="#" className="text-gray-200 transition-all duration-300 hover:-translate-y-0.5">
+        <a
+          href="#"
+          aria-label="Visit our GitHub repository"
+          className="text-gray-200 transition-all duration-300 hover:-translate-y-0.5"
+        >
           <FaGithub />
         </a>
       </div>
