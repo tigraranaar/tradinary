@@ -1,15 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import {
-  IoChevronDown,
-  IoTrendingUp,
-  IoTrendingDown,
-  IoRemove,
-  IoAlertCircle,
-} from "react-icons/io5";
+import { useState, useEffect, useMemo } from "react";
+import { IoTrendingUp, IoTrendingDown, IoRemove, IoAlertCircle } from "react-icons/io5";
 import { useAuth } from "@/contexts/auth-context";
 import { TradingPair, SignalResponse, SignalType } from "@/types/trading";
+import { Combobox, type ComboboxOption } from "@/components/ui/combobox";
 
 export default function DashboardPage() {
   const { session } = useAuth();
@@ -19,8 +14,6 @@ export default function DashboardPage() {
   const [timeframes, setTimeframes] = useState<string[]>([]);
   const [selectedPair, setSelectedPair] = useState<string>("");
   const [selectedTimeframe, setSelectedTimeframe] = useState<string>("");
-  const [isPairOpen, setIsPairOpen] = useState(false);
-  const [isTimeframeOpen, setIsTimeframeOpen] = useState(false);
 
   // Loading and error states
   const [loadingPairs, setLoadingPairs] = useState(true);
@@ -187,6 +180,38 @@ export default function DashboardPage() {
     }
   };
 
+  // Convert pairs to combobox options
+  const pairOptions: ComboboxOption[] = useMemo(
+    () =>
+      pairs.map((pair) => ({
+        value: pair.symbol,
+        label: pair.name ? `${pair.symbol} - ${pair.name}` : pair.symbol,
+      })),
+    [pairs]
+  );
+
+  // Convert timeframes to combobox options
+  const timeframeOptions: ComboboxOption[] = useMemo(
+    () =>
+      timeframes.map((timeframe) => ({
+        value: timeframe,
+        label: timeframe,
+      })),
+    [timeframes]
+  );
+
+  // Handle pair selection
+  const handlePairChange = (value: string) => {
+    setSelectedPair(value);
+    setSignal(null); // Reset signal when changing pair
+  };
+
+  // Handle timeframe selection
+  const handleTimeframeChange = (value: string) => {
+    setSelectedTimeframe(value);
+    setSignal(null); // Reset signal when changing timeframe
+  };
+
   return (
     <main className="min-h-screen px-4 py-12">
       <div className="mx-auto max-w-7xl">
@@ -211,90 +236,43 @@ export default function DashboardPage() {
         {/* Controls Section */}
         <div className="glass mb-8 rounded-2xl p-8 backdrop-blur-lg">
           <div className="mb-6 grid grid-cols-1 gap-6 md:grid-cols-2">
-            {/* Trading Pair Dropdown */}
-            <div className="relative">
+            {/* Trading Pair Combobox */}
+            <div>
               <label className="mb-2 block text-sm font-medium text-white/80">Trading Pair</label>
-              <button
-                onClick={() => {
-                  if (!loadingPairs && pairs.length > 0) {
-                    setIsPairOpen(!isPairOpen);
-                    setIsTimeframeOpen(false);
-                  }
-                }}
-                disabled={loadingPairs || pairs.length === 0}
-                className="glass flex w-full items-center justify-between rounded-xl px-4 py-3 backdrop-blur-lg transition-all hover:bg-white/15 disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                <span className="font-medium">
-                  {loadingPairs ? "Loading pairs..." : selectedPair || "Select a pair"}
-                </span>
-                <IoChevronDown
-                  className={`transition-transform ${isPairOpen ? "rotate-180" : ""}`}
-                />
-              </button>
-
-              {/* Pair Dropdown Menu */}
-              {isPairOpen && (
-                <div className="absolute z-10 mt-2 max-h-60 w-full overflow-hidden overflow-y-auto rounded-xl border border-white/10 bg-[#190029] shadow-xl">
-                  {pairs.map((pair) => (
-                    <button
-                      key={pair.symbol}
-                      onClick={() => {
-                        setSelectedPair(pair.symbol);
-                        setIsPairOpen(false);
-                        setSignal(null); // Reset signal when changing pair
-                      }}
-                      className={`w-full px-4 py-3 text-left transition-colors hover:bg-white/10 ${
-                        selectedPair === pair.symbol ? "bg-white/10 font-medium" : ""
-                      }`}
-                    >
-                      {pair.symbol}
-                      {pair.name && <span className="ml-2 text-sm text-white/60">{pair.name}</span>}
-                    </button>
-                  ))}
+              {loadingPairs ? (
+                <div className="glass flex w-full items-center justify-center rounded-xl px-4 py-3 backdrop-blur-lg">
+                  <span className="font-medium">Loading pairs...</span>
                 </div>
+              ) : (
+                <Combobox
+                  options={pairOptions}
+                  value={selectedPair}
+                  onValueChange={handlePairChange}
+                  placeholder="Select a pair"
+                  searchPlaceholder="Search pairs..."
+                  emptyMessage="No pair found."
+                  disabled={loadingPairs || pairs.length === 0}
+                />
               )}
             </div>
 
-            {/* Timeframe Dropdown */}
-            <div className="relative">
+            {/* Timeframe Combobox */}
+            <div>
               <label className="mb-2 block text-sm font-medium text-white/80">Timeframe</label>
-              <button
-                onClick={() => {
-                  setIsTimeframeOpen(!isTimeframeOpen);
-                  setIsPairOpen(false);
-                }}
-                disabled={loadingPairs || pairs.length === 0}
-                className="glass flex w-full items-center justify-between rounded-xl px-4 py-3 backdrop-blur-lg transition-all hover:bg-white/15 disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                <span className="font-medium">
-                  {loadingPairs
-                    ? "Loading timeframes..."
-                    : selectedTimeframe || "Select a timeframe"}
-                </span>
-                <IoChevronDown
-                  className={`transition-transform ${isTimeframeOpen ? "rotate-180" : ""}`}
-                />
-              </button>
-
-              {/* Timeframe Dropdown Menu */}
-              {isTimeframeOpen && (
-                <div className="absolute z-10 mt-2 w-full overflow-hidden rounded-xl border border-white/10 bg-[#190029] shadow-xl">
-                  {timeframes.map((timeframe) => (
-                    <button
-                      key={timeframe}
-                      onClick={() => {
-                        setSelectedTimeframe(timeframe);
-                        setIsTimeframeOpen(false);
-                        setSignal(null); // Reset signal when changing timeframe
-                      }}
-                      className={`w-full px-4 py-3 text-left transition-colors hover:bg-white/10 ${
-                        selectedTimeframe === timeframe ? "bg-white/10 font-medium" : ""
-                      }`}
-                    >
-                      {timeframe}
-                    </button>
-                  ))}
+              {loadingPairs ? (
+                <div className="glass flex w-full items-center justify-center rounded-xl px-4 py-3 backdrop-blur-lg">
+                  <span className="font-medium">Loading timeframes...</span>
                 </div>
+              ) : (
+                <Combobox
+                  options={timeframeOptions}
+                  value={selectedTimeframe}
+                  onValueChange={handleTimeframeChange}
+                  placeholder="Select a timeframe"
+                  searchPlaceholder="Search timeframes..."
+                  emptyMessage="No timeframe found."
+                  disabled={loadingPairs || pairs.length === 0}
+                />
               )}
             </div>
           </div>
