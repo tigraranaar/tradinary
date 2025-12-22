@@ -30,8 +30,6 @@ export default function DashboardPage() {
   useEffect(() => {
     const fetchPairs = async () => {
       if (!session?.access_token) {
-        setError("Please log in to access trading data");
-        setLoadingPairs(false);
         return;
       }
 
