@@ -1,6 +1,6 @@
 import { IoTrendingUp, IoTrendingDown, IoRemove } from "react-icons/io5";
 import { SignalResponse, SignalType } from "@/types/trading";
-import { IndicatorsTable } from "./indicators-table";
+import { IndicatorsTable } from "./basic/indicators-table/indicators-table";
 
 interface SignalResultProps {
   signal: SignalResponse;
