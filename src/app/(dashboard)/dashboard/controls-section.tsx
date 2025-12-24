@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { Combobox, type ComboboxOption } from "@/components/ui/combobox";
 
 interface ControlsSectionProps {
@@ -24,54 +25,53 @@ export function ControlsSection({
   onAnalyze,
 }: ControlsSectionProps) {
   return (
-    <div className="glass mb-8 rounded-2xl p-8 backdrop-blur-lg">
-      <div className="mb-6 grid grid-cols-1 gap-6 md:grid-cols-2">
-        {/* Trading Pair Combobox */}
-        <div>
-          <label className="mb-2 block text-sm font-medium text-white/80">Trading Pair</label>
-          {loadingPairs ? (
-            <div className="glass flex w-full items-center justify-center rounded-xl px-4 py-3 backdrop-blur-lg">
-              <span className="font-medium">Loading pairs...</span>
-            </div>
-          ) : (
-            <Combobox
-              options={pairOptions}
-              value={selectedPair}
-              onValueChange={onPairChange}
-              placeholder="Select a pair"
-              searchPlaceholder="Search pairs..."
-              emptyMessage="No pair found."
-              disabled={loadingPairs || pairOptions.length === 0}
-            />
-          )}
-        </div>
+    <div className="flex flex-col gap-4 p-4">
+      {/* Trading Pair Combobox */}
+      <div>
+        <label className="mb-2 block text-sm font-medium text-white/80">Trading Pair</label>
+        {loadingPairs ? (
+          <div className="glass flex w-full items-center justify-center rounded-xl px-4 py-3 backdrop-blur-lg">
+            <span className="font-medium">Loading pairs...</span>
+          </div>
+        ) : (
+          <Combobox
+            options={pairOptions}
+            value={selectedPair}
+            onValueChange={onPairChange}
+            placeholder="Select a pair"
+            searchPlaceholder="Search pairs..."
+            emptyMessage="No pair found."
+            disabled={loadingPairs || pairOptions.length === 0}
+          />
+        )}
+      </div>
 
-        {/* Timeframe Combobox */}
-        <div>
-          <label className="mb-2 block text-sm font-medium text-white/80">Timeframe</label>
-          {loadingPairs ? (
-            <div className="glass flex w-full items-center justify-center rounded-xl px-4 py-3 backdrop-blur-lg">
-              <span className="font-medium">Loading timeframes...</span>
-            </div>
-          ) : (
-            <Combobox
-              options={timeframeOptions}
-              value={selectedTimeframe}
-              onValueChange={onTimeframeChange}
-              placeholder="Select a timeframe"
-              searchPlaceholder="Search timeframes..."
-              emptyMessage="No timeframe found."
-              disabled={loadingPairs || timeframeOptions.length === 0}
-            />
-          )}
-        </div>
+      {/* Timeframe Combobox */}
+      <div>
+        <label className="mb-2 block text-sm font-medium text-white/80">Timeframe</label>
+        {loadingPairs ? (
+          <div className="glass flex w-full items-center justify-center rounded-xl px-4 py-3 backdrop-blur-lg">
+            <span className="font-medium">Loading timeframes...</span>
+          </div>
+        ) : (
+          <Combobox
+            options={timeframeOptions}
+            value={selectedTimeframe}
+            onValueChange={onTimeframeChange}
+            placeholder="Select a timeframe"
+            searchPlaceholder="Search timeframes..."
+            emptyMessage="No timeframe found."
+            disabled={loadingPairs || timeframeOptions.length === 0}
+          />
+        )}
       </div>
 
       {/* Analyze Button */}
-      <button
+      <Button
         onClick={onAnalyze}
         disabled={!selectedPair || loadingSignal || loadingPairs}
-        className="btn w-full bg-gradient-to-r from-purple-600 to-pink-600 py-3 text-base font-semibold disabled:cursor-not-allowed disabled:opacity-50"
+        variant="glass"
+        className="mt-4 w-full"
       >
         {loadingSignal ? (
           <span className="flex items-center justify-center gap-2">
@@ -100,7 +100,7 @@ export function ControlsSection({
         ) : (
           "Analyze Signal"
         )}
-      </button>
+      </Button>
     </div>
   );
 }
