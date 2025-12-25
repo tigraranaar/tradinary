@@ -12,7 +12,6 @@ export interface TradingSignalsServiceTradingPair {
 
 export interface SignalRequest {
   symbol: string;
-  timeframe: string;
 }
 
 export interface TradingSignalsServicePairsResponse {
@@ -56,6 +55,12 @@ export interface TradingSignalsServiceSignalResponse {
   indicators: Record<string, number | null>;
 }
 
+export interface TradingSignalsServiceSignalsResponse {
+  symbol: string;
+  timestamp: string;
+  signals: Record<string, TradingSignalsServiceSignalResponse>;
+}
+
 export interface SignalResponse {
   symbol: string;
   timeframe: string;
@@ -64,6 +69,12 @@ export interface SignalResponse {
   timestamp: string;
   analysis: SignalAnalysis;
   indicators: Record<string, number | null>;
+}
+
+export interface SignalsResponse {
+  symbol: string;
+  timestamp: string;
+  signals: Record<string, SignalResponse>;
 }
 
 export interface ApiError {

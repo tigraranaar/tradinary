@@ -1,9 +1,9 @@
 import {
   SignalRequest,
-  SignalResponse,
+  SignalsResponse,
   PairsResponse,
   TradingSignalsServicePairsResponse,
-  TradingSignalsServiceSignalResponse,
+  TradingSignalsServiceSignalsResponse,
 } from "@/types/trading";
 import { env } from "@/lib/env/server";
 
@@ -58,11 +58,11 @@ export async function getPairs(): Promise<PairsResponse> {
 }
 
 /**
- * Get trading signal for a specific pair and timeframe
+ * Get trading signals for a specific pair across all timeframes
  */
-export async function getSignal(request: SignalRequest): Promise<SignalResponse> {
+export async function getSignals(request: SignalRequest): Promise<SignalsResponse> {
   try {
-    const data = await tradingSignalsServiceApiFetch<TradingSignalsServiceSignalResponse>(
+    const data = await tradingSignalsServiceApiFetch<TradingSignalsServiceSignalsResponse>(
       "/api/v1/signal",
       {
         method: "POST",
@@ -72,7 +72,7 @@ export async function getSignal(request: SignalRequest): Promise<SignalResponse>
 
     return data;
   } catch (error) {
-    console.error("Error fetching signal:", error);
+    console.error("Error fetching signals:", error);
     throw error;
   }
 }

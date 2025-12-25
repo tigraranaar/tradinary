@@ -2,11 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { getUserFromRequest } from "@/lib/auth-server";
 import { rateLimitMiddleware } from "@/lib/rate-limit";
 import { SignalRequest } from "@/types/trading";
-import { getSignal } from "@/lib/trading-signals-service-api";
+import { getSignals } from "@/lib/trading-signals-service-api";
 
 /**
  * POST /api/signal
- * Get trading signal for a specific pair and timeframe
+ * Get trading signals for a specific pair across all timeframes
  * Requires authentication
  */
 export async function POST(request: NextRequest) {
@@ -54,21 +54,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!body.symbol || !body.timeframe) {
+    if (!body.symbol) {
       return NextResponse.json(
         {
           error: "Bad Request",
-          message: "Missing required fields: symbol and timeframe",
+          message: "Missing required field: symbol",
         },
         { status: 400 }
       );
     }
 
-    // 4. Fetch signal from Trading Signals Service API
-    const signal = await getSignal(body);
+    // 4. Fetch signals from Trading Signals Service API
+    const signals = await getSignals(body);
 
     // 5. Return response with rate limit headers
-    return NextResponse.json(signal, {
+    return NextResponse.json(signals, {
       status: 200,
       headers: rateLimit.headers,
     });
@@ -89,7 +89,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(
       {
         error: "Internal Server Error",
-        message: error instanceof Error ? error.message : "Failed to fetch trading signal",
+        message: error instanceof Error ? error.message : "Failed to fetch trading signals",
       },
       { status: 500 }
     );

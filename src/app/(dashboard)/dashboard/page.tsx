@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { useAuth } from "@/contexts/auth-context";
-import { TradingPair, SignalResponse } from "@/types/trading";
+import { TradingPair, SignalResponse, SignalsResponse } from "@/types/trading";
 import { type ComboboxOption } from "@/components/ui/combobox";
 import { SignalResult } from "./signal-result";
 import { ControlsSection } from "./controls-section";
@@ -23,8 +23,8 @@ export default function DashboardPage() {
   const [loadingSignal, setLoadingSignal] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Signal result
-  const [signal, setSignal] = useState<SignalResponse | null>(null);
+  // Signals for all timeframes
+  const [signalsData, setSignalsData] = useState<SignalsResponse | null>(null);
 
   // Fetch pairs on mount
   useEffect(() => {
@@ -72,51 +72,61 @@ export default function DashboardPage() {
     fetchPairs();
   }, [session?.access_token]);
 
-  // Handle signal analysis
-  const handleAnalyze = async () => {
-    if (!selectedPair || !session?.access_token) {
-      setError("Please select a trading pair and log in");
-      return;
-    }
-
-    try {
-      setLoadingSignal(true);
-      setError(null);
-      setSignal(null);
-
-      const response = await fetch("/api/signal", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session.access_token}`,
-        },
-        body: JSON.stringify({
-          symbol: selectedPair,
-          timeframe: selectedTimeframe,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-
-        // Handle rate limiting
-        if (response.status === 429) {
-          const retryAfter = response.headers.get("Retry-After");
-          throw new Error(`Rate limit exceeded. Please try again in ${retryAfter} seconds.`);
-        }
-
-        throw new Error(errorData.message || "Failed to fetch signal");
+  // Fetch signals when pair changes
+  useEffect(() => {
+    const fetchSignals = async () => {
+      if (!selectedPair || !session?.access_token) {
+        return;
       }
 
-      const data = await response.json();
-      setSignal(data);
-    } catch (err) {
-      console.error("Error fetching signal:", err);
-      setError(err instanceof Error ? err.message : "Failed to analyze signal");
-    } finally {
-      setLoadingSignal(false);
+      try {
+        setLoadingSignal(true);
+        setError(null);
+        setSignalsData(null);
+
+        const response = await fetch("/api/signal", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session.access_token}`,
+          },
+          body: JSON.stringify({
+            symbol: selectedPair,
+          }),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+
+          // Handle rate limiting
+          if (response.status === 429) {
+            const retryAfter = response.headers.get("Retry-After");
+            throw new Error(`Rate limit exceeded. Please try again in ${retryAfter} seconds.`);
+          }
+
+          throw new Error(errorData.message || "Failed to fetch signals");
+        }
+
+        const data = await response.json();
+        setSignalsData(data);
+      } catch (err) {
+        console.error("Error fetching signals:", err);
+        setError(err instanceof Error ? err.message : "Failed to fetch signals");
+      } finally {
+        setLoadingSignal(false);
+      }
+    };
+
+    fetchSignals();
+  }, [selectedPair, session?.access_token]);
+
+  // Get current signal for selected timeframe
+  const currentSignal: SignalResponse | null = useMemo(() => {
+    if (!signalsData || !selectedTimeframe) {
+      return null;
     }
-  };
+    return signalsData.signals[selectedTimeframe] || null;
+  }, [signalsData, selectedTimeframe]);
 
   // Convert pairs to combobox options
   const pairOptions: ComboboxOption[] = useMemo(
@@ -141,13 +151,13 @@ export default function DashboardPage() {
   // Handle pair selection
   const handlePairChange = (value: string) => {
     setSelectedPair(value);
-    setSignal(null); // Reset signal when changing pair
+    setSignalsData(null); // Reset signals when changing pair (will trigger new fetch)
   };
 
   // Handle timeframe selection
   const handleTimeframeChange = (value: string) => {
     setSelectedTimeframe(value);
-    setSignal(null); // Reset signal when changing timeframe
+    // No need to reset signals - we use cached data
   };
 
   return (
@@ -169,11 +179,10 @@ export default function DashboardPage() {
           loadingSignal={loadingSignal}
           onPairChange={handlePairChange}
           onTimeframeChange={handleTimeframeChange}
-          onAnalyze={handleAnalyze}
         />
 
         {/* Signal Result */}
-        {signal && <SignalResult signal={signal} />}
+        {currentSignal && <SignalResult signal={currentSignal} />}
       </div>
     </main>
   );
