@@ -239,7 +239,7 @@ export default function Navbar() {
       )}
 
       <div
-        className={`fixed inset-0 z-50 flex flex-col items-center justify-center gap-6 bg-black/20 text-lg font-medium backdrop-blur-2xl transition duration-300 md:hidden ${isOpen ? "translate-x-0" : "-translate-x-full"}`}
+        className={`bg-background fixed inset-0 z-50 flex flex-col items-center justify-center gap-6 text-lg font-medium backdrop-blur-2xl transition duration-300 md:hidden ${isOpen ? "translate-x-0" : "-translate-x-full"}`}
         suppressHydrationWarning
       >
         {publicLinks.map((link) => (
