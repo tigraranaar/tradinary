@@ -1,4 +1,4 @@
-import SectionTitle from "@/components/section-title";
+import SectionTitle from "./section-title";
 import { FaCheck, FaCrown, FaGift, FaBolt } from "react-icons/fa6";
 import Link from "next/link";
 

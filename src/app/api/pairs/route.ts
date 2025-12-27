@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getUserFromRequest } from "@/lib/auth-server";
-import { rateLimitMiddleware } from "@/lib/rate-limit";
-import { getPairs } from "@/lib/trading-signals-service-api";
+import { getUserFromRequest } from "@/lib/auth/server";
+import { rateLimitMiddleware } from "@/lib/middleware/rate-limit";
+import { getPairs } from "@/lib/api/trading-signals-service";
 
 /**
  * GET /api/pairs

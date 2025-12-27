@@ -171,7 +171,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             )}
 
             {/* Vertical Menu */}
-            <div className="mt-4 flex flex-col gap-2">
+            <div className="mt-10 flex flex-col gap-2">
               <Link href="/dashboard/signal">
                 <Button
                   variant={currentTab === "signal" ? "default" : "ghost"}

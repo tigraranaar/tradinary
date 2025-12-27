@@ -1,9 +1,8 @@
 "use client";
 
 import { useDashboardStore } from "@/stores/dashboard-store";
-import { columns } from "./columns";
-import { DataTable } from "./data-table";
-import type { IndicatorRow } from "./columns";
+import { indicatorsColumns, type IndicatorRow } from "../components/indicators-columns";
+import { DataTable } from "../components/data-table";
 
 export default function IndicatorsPage() {
   const { selectedPair, selectedTimeframe, getCurrentSignal } = useDashboardStore();
@@ -46,7 +45,7 @@ export default function IndicatorsPage() {
         </h3>
         <div className="max-h-[500px] overflow-auto">
           <div className="container mx-auto py-10">
-            <DataTable columns={columns} data={tableData} />
+            <DataTable columns={indicatorsColumns} data={tableData} />
           </div>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import SectionTitle from "@/components/section-title";
+import SectionTitle from "./section-title";
 import { FaChartLine, FaBrain, FaRobot, FaBolt } from "react-icons/fa6";
 
 export default function Features() {

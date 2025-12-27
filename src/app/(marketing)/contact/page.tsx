@@ -2,8 +2,8 @@
 
 import { useActionState, useEffect, useRef } from "react";
 import { useFormStatus } from "react-dom";
-import PageTitle from "@/components/page-title";
-import { submitContactForm, type ContactFormState } from "@/app/actions/contact";
+import PageTitle from "../components/page-title";
+import { submitContactForm, type ContactFormState } from "@/actions/contact";
 
 function SubmitButton() {
   const { pending } = useFormStatus();

@@ -1,4 +1,4 @@
-import SectionTitle from "@/components/section-title";
+import SectionTitle from "./section-title";
 import Image from "next/image";
 
 const steps = [

@@ -1,8 +1,8 @@
 "use server";
 
 import { z } from "zod";
-import { createServerSupabaseClient } from "@/lib/auth-server";
-import { checkRateLimit } from "@/lib/rate-limit";
+import { createServerSupabaseClient } from "@/lib/auth/server";
+import { checkRateLimit } from "@/lib/middleware/rate-limit";
 import { headers } from "next/headers";
 
 // Validation schema

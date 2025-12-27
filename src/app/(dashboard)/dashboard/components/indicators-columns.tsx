@@ -8,7 +8,7 @@ export type IndicatorRow = {
   value: number | null;
 };
 
-export const columns: ColumnDef<IndicatorRow>[] = [
+export const indicatorsColumns: ColumnDef<IndicatorRow>[] = [
   {
     accessorKey: "indicator",
     header: "Indicator",

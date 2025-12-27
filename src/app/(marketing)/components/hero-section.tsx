@@ -1,6 +1,6 @@
 "use client";
 
-import VideoBackground from "@/components/video-background";
+import VideoBackground from "./video-background";
 
 export default function HeroSection() {
   return (

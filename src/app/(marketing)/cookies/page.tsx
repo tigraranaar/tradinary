@@ -1,6 +1,8 @@
 import { Metadata } from "next";
-import PolicyPageContent from "@/components/policy-page-content";
-import { cookiesData } from "@/data/cookies";
+import PolicyPageContent from "../components/policy-page-content";
+import { cookiesData } from "@/lib/data/cookies";
+
+export const dynamic = "force-static";
 
 export const metadata: Metadata = {
   title: "Cookie Policy | Tradinary",
@@ -10,6 +12,7 @@ export const metadata: Metadata = {
     title: "Cookie Policy | Tradinary",
     description:
       "Learn how Tradinary uses cookies and similar technologies. Understand our cookie policy, types of cookies we use, and how to manage your cookie preferences.",
+    type: "website",
   },
 };
 

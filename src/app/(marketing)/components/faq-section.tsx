@@ -1,9 +1,9 @@
 "use client";
 
-import SectionTitle from "@/components/section-title";
+import SectionTitle from "./section-title";
 import { FaArrowRight } from "react-icons/fa6";
 import Link from "next/link";
-import { faqData } from "@/data/faq";
+import { faqData } from "@/lib/data/faq";
 import {
   Accordion,
   AccordionContent,

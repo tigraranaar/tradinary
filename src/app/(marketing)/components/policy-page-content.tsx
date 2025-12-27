@@ -1,5 +1,5 @@
 import Link from "next/link";
-import PageTitle from "@/components/page-title";
+import PageTitle from "./page-title";
 import { PolicyData, PolicyContentItem } from "@/types/policy";
 
 interface PolicyPageContentProps {

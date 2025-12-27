@@ -1,8 +1,8 @@
 "use client";
 
 import { useDashboardStore } from "@/stores/dashboard-store";
-import { SignalResult } from "../signal-result";
-import { DashboardHeader } from "../dashboard-header";
+import { SignalResult } from "../components/signal-result";
+import { DashboardHeader } from "../components/dashboard-header";
 
 export default function SignalPage() {
   const { getCurrentSignal } = useDashboardStore();

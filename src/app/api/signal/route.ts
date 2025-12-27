@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getUserFromRequest } from "@/lib/auth-server";
-import { rateLimitMiddleware } from "@/lib/rate-limit";
+import { getUserFromRequest } from "@/lib/auth/server";
+import { rateLimitMiddleware } from "@/lib/middleware/rate-limit";
 import { SignalRequest } from "@/types/trading";
-import { getSignals } from "@/lib/trading-signals-service-api";
+import { getSignals } from "@/lib/api/trading-signals-service";
 
 /**
  * POST /api/signal
