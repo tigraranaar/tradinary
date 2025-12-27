@@ -1,7 +1,12 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getUserFromRequest } from "@/lib/auth/server";
-import { rateLimitMiddleware } from "@/lib/middleware/rate-limit";
+import { NextRequest } from "next/server";
 import { getPairs } from "@/lib/api/trading-signals-service";
+import {
+  requireAuth,
+  checkRateLimit,
+  handleApiError,
+  RATE_LIMIT_WINDOW_MS,
+  RATE_LIMIT_PAIRS,
+} from "@/lib/api/helpers";
 
 /**
  * GET /api/pairs
@@ -11,26 +16,19 @@ import { getPairs } from "@/lib/api/trading-signals-service";
 export async function GET(request: NextRequest) {
   try {
     // 1. Verify authentication
-    const { user, error: authError } = await getUserFromRequest(request);
-
-    if (!user || authError) {
-      return NextResponse.json(
-        {
-          error: "Unauthorized",
-          message: authError || "Please log in to access this resource",
-        },
-        { status: 401 }
-      );
+    const authResult = await requireAuth(request);
+    if (authResult instanceof Response) {
+      return authResult;
     }
 
-    // 2. Check rate limit (30 requests per minute per user)
-    const rateLimit = rateLimitMiddleware(user.id, {
-      windowMs: 60 * 1000, // 1 minute
-      maxRequests: 30,
+    // 2. Check rate limit
+    const rateLimit = checkRateLimit(authResult.id, {
+      windowMs: RATE_LIMIT_WINDOW_MS,
+      maxRequests: RATE_LIMIT_PAIRS,
     });
 
     if (!rateLimit.allowed) {
-      return NextResponse.json(
+      return Response.json(
         {
           error: "Too Many Requests",
           message: "Rate limit exceeded. Please try again later.",
@@ -46,19 +44,11 @@ export async function GET(request: NextRequest) {
     const data = await getPairs();
 
     // 4. Return response with rate limit headers
-    return NextResponse.json(data, {
+    return Response.json(data, {
       status: 200,
       headers: rateLimit.headers,
     });
   } catch (error) {
-    console.error("Error in /api/pairs:", error);
-
-    return NextResponse.json(
-      {
-        error: "Internal Server Error",
-        message: error instanceof Error ? error.message : "Failed to fetch trading pairs",
-      },
-      { status: 500 }
-    );
+    return handleApiError(error, "/api/pairs");
   }
 }
