@@ -198,7 +198,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <div className="flex-1 p-4">
         {/* Timeframe Selection - Always visible */}
         <div className="mb-6">
-          <label className="mb-3 block text-sm font-medium text-white/80">Timeframe</label>
+          <label className="mb-3 block text-sm font-medium text-white/80">Choose a Timeframe</label>
           {loadingPairs ? (
             <div className="glass flex flex-wrap gap-2 rounded-xl p-2 backdrop-blur-lg">
               {[1, 2, 3, 4, 5].map((i) => (
