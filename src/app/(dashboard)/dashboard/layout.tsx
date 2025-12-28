@@ -79,52 +79,47 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session?.access_token]);
 
-  // Fetch signals when pair changes
-  useEffect(() => {
-    const fetchSignals = async () => {
-      if (!selectedPair || !session?.access_token) {
-        return;
-      }
+  // Fetch signals manually
+  const handleAnalyze = async () => {
+    if (!selectedPair || !session?.access_token) {
+      return;
+    }
 
-      try {
-        setLoadingSignal(true);
-        setSignalsData(null);
+    try {
+      setLoadingSignal(true);
+      setSignalsData(null);
 
-        const response = await fetch("/api/signal", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${session.access_token}`,
-          },
-          body: JSON.stringify({
-            symbol: selectedPair,
-          }),
-        });
+      const response = await fetch("/api/signal", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({
+          symbol: selectedPair,
+        }),
+      });
 
-        if (!response.ok) {
-          const errorData = await response.json();
+      if (!response.ok) {
+        const errorData = await response.json();
 
-          // Handle rate limiting
-          if (response.status === 429) {
-            const retryAfter = response.headers.get("Retry-After");
-            throw new Error(`Rate limit exceeded. Please try again in ${retryAfter} seconds.`);
-          }
-
-          throw new Error(errorData.message || "Failed to fetch signals");
+        // Handle rate limiting
+        if (response.status === 429) {
+          const retryAfter = response.headers.get("Retry-After");
+          throw new Error(`Rate limit exceeded. Please try again in ${retryAfter} seconds.`);
         }
 
-        const data = await response.json();
-        setSignalsData(data);
-      } catch (err) {
-        console.error("Error fetching signals:", err);
-      } finally {
-        setLoadingSignal(false);
+        throw new Error(errorData.message || "Failed to fetch signals");
       }
-    };
 
-    fetchSignals();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedPair, session?.access_token]);
+      const data = await response.json();
+      setSignalsData(data);
+    } catch (err) {
+      console.error("Error fetching signals:", err);
+    } finally {
+      setLoadingSignal(false);
+    }
+  };
 
   // Convert pairs to combobox options
   const pairOptions: ComboboxOption[] = useMemo(
@@ -139,7 +134,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   // Handle pair selection
   const handlePairChange = (value: string) => {
     setSelectedPair(value);
-    setSignalsData(null); // Reset signals when changing pair (will trigger new fetch)
+    setSignalsData(null); // Reset signals when changing pair
   };
 
   // Handle timeframe selection
@@ -159,15 +154,27 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <span className="font-medium">Loading pairs...</span>
               </div>
             ) : (
-              <Combobox
-                options={pairOptions}
-                value={selectedPair}
-                onValueChange={handlePairChange}
-                placeholder="Select a pair"
-                searchPlaceholder="Search pairs..."
-                emptyMessage="No pair found."
-                disabled={loadingPairs || pairOptions.length === 0}
-              />
+              <div className="flex flex-col gap-6">
+                <Combobox
+                  options={pairOptions}
+                  value={selectedPair}
+                  onValueChange={handlePairChange}
+                  placeholder="Select a pair"
+                  searchPlaceholder="Search pairs..."
+                  emptyMessage="No pair found."
+                  disabled={loadingPairs || pairOptions.length === 0}
+                />
+                <Button
+                  variant="glass"
+                  onClick={handleAnalyze}
+                  disabled={
+                    loadingSignal || !selectedPair || loadingPairs || pairOptions.length === 0
+                  }
+                  className="whitespace-nowrap"
+                >
+                  {loadingSignal ? "Analyzing..." : "Analyze"}
+                </Button>
+              </div>
             )}
 
             {/* Vertical Menu */}
