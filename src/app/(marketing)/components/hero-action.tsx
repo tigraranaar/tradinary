@@ -32,10 +32,10 @@ export default function HeroAction() {
         >
           {!loading && user ? "Go to Dashboard" : "Get Started Free"}
         </button>
-        <button className="btn glass flex items-center justify-center gap-2 py-3 max-md:w-full">
+        {/* <button className="btn glass flex items-center justify-center gap-2 py-3 max-md:w-full">
           <FaCirclePlay className="size-4.5" />
           Watch Demo
-        </button>
+        </button> */}
       </motion.div>
     </>
   );

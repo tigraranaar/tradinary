@@ -20,9 +20,12 @@ export default function IndicatorsPage() {
 
   if (!currentSignal || !selectedPair || !selectedTimeframe) {
     return (
-      <div className="glass rounded-xl border border-red-500/40 bg-red-500/10 p-6 backdrop-blur-lg">
-        <h2 className="mb-2 text-xl font-semibold text-red-200">No Data Available</h2>
-        <p className="text-red-200">Please select a trading pair and timeframe in the sidebar.</p>
+      <div className="glass rounded-xl border border-purple-500/40 bg-purple-500/10 p-6 backdrop-blur-lg">
+        <h2 className="mb-2 text-xl font-semibold text-purple-200">Get Started</h2>
+        <p className="text-purple-200/80">
+          Please select a trading pair and click &quot;Analyze&quot; to begin viewing technical
+          indicators.
+        </p>
       </div>
     );
   }

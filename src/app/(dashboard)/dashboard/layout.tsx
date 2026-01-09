@@ -6,17 +6,19 @@ import { useDashboardStore } from "@/stores/dashboard-store";
 import { Combobox, type ComboboxOption } from "@/components/ui/combobox";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const { session } = useAuth();
   const pathname = usePathname();
+  const router = useRouter();
   const {
     pairs,
     timeframes,
     selectedPair,
     selectedTimeframe,
+    signalsData,
     loadingPairs,
     loadingSignal,
     setPairs,
@@ -114,6 +116,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       const data = await response.json();
       setSignalsData(data);
+      // Redirect to /dashboard/signal after successful analysis
+      if (pathname === "/dashboard") {
+        router.push("/dashboard/signal");
+      }
     } catch (err) {
       console.error("Error fetching signals:", err);
     } finally {
@@ -126,7 +132,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     () =>
       pairs.map((pair) => ({
         value: pair.symbol,
-        label: pair.name ? `${pair.symbol} - ${pair.name}` : pair.symbol,
+        label: pair.symbol.toUpperCase(),
       })),
     [pairs]
   );
@@ -135,6 +141,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const handlePairChange = (value: string) => {
     setSelectedPair(value);
     setSignalsData(null); // Reset signals when changing pair
+    // Redirect to /dashboard when changing pair
+    if (pathname !== "/dashboard") {
+      router.push("/dashboard");
+    }
   };
 
   // Handle timeframe selection
@@ -177,61 +187,77 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               </div>
             )}
 
-            {/* Vertical Menu */}
-            <div className="mt-10 flex flex-col gap-2">
-              <Link href="/dashboard/signal">
-                <Button
-                  variant={currentTab === "signal" ? "default" : "ghost"}
-                  className="w-full justify-start"
-                >
-                  Signal
-                </Button>
-              </Link>
-              <Link href="/dashboard/indicators">
-                <Button
-                  variant={currentTab === "indicators" ? "default" : "ghost"}
-                  className="w-full justify-start"
-                  disabled={!currentSignal}
-                >
-                  Indicators
-                </Button>
-              </Link>
-            </div>
+            {/* Vertical Menu - Only show after analysis */}
+            {signalsData && (
+              <div className="mt-10 flex flex-col gap-2">
+                <Link href="/dashboard/signal">
+                  <Button
+                    variant={currentTab === "signal" ? "default" : "ghost"}
+                    className="w-full justify-start"
+                  >
+                    Signal
+                  </Button>
+                </Link>
+                <Link href="/dashboard/indicators">
+                  <Button
+                    variant={currentTab === "indicators" ? "default" : "ghost"}
+                    className="w-full justify-start"
+                    disabled={!currentSignal}
+                  >
+                    Indicators
+                  </Button>
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </div>
 
       {/* Main Content */}
       <div className="flex-1 p-4">
+        {/* Loading Signals Indicator */}
+        {loadingSignal ? (
+          <div className="mb-6">
+            <div className="glass flex items-center justify-center gap-3 rounded-xl p-4 backdrop-blur-lg">
+              <div className="h-5 w-5 animate-spin rounded-full border-2 border-purple-500/30 border-t-purple-500"></div>
+              <span className="text-sm font-medium text-white/80">Loading signals...</span>
+            </div>
+          </div>
+        ) : null}
+
         {/* Timeframe Selection - Always visible */}
-        <div className="mb-6">
-          <label className="mb-3 block text-sm font-medium text-white/80">Choose a Timeframe</label>
-          {loadingPairs ? (
-            <div className="glass flex flex-wrap gap-2 rounded-xl p-2 backdrop-blur-lg">
-              {[1, 2, 3, 4, 5].map((i) => (
-                <Skeleton key={i} className="h-9 w-20 rounded-md" />
-              ))}
-            </div>
-          ) : (
-            <div className="glass flex flex-wrap gap-2 rounded-xl p-2 backdrop-blur-lg">
-              {timeframes.map((timeframe) => (
-                <Button
-                  key={timeframe}
-                  variant={selectedTimeframe === timeframe ? "default" : "ghost"}
-                  className={
-                    selectedTimeframe === timeframe
-                      ? "border-purple-500/40 bg-purple-500/20 text-purple-300 hover:bg-purple-500/30"
-                      : "text-white/60 hover:bg-white/10 hover:text-white"
-                  }
-                  onClick={() => handleTimeframeChange(timeframe)}
-                  disabled={loadingSignal || !selectedPair}
-                >
-                  {timeframe}
-                </Button>
-              ))}
-            </div>
-          )}
-        </div>
+        {signalsData ? (
+          <div className="mb-6">
+            <label className="mb-3 block text-sm font-medium text-white/80">
+              Choose a Timeframe
+            </label>
+            {loadingPairs ? (
+              <div className="glass flex flex-wrap gap-2 rounded-xl p-2 backdrop-blur-lg">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <Skeleton key={i} className="h-9 w-20 rounded-md" />
+                ))}
+              </div>
+            ) : (
+              <div className="glass flex flex-wrap gap-2 rounded-xl p-2 backdrop-blur-lg">
+                {timeframes.map((timeframe) => (
+                  <Button
+                    key={timeframe}
+                    variant={selectedTimeframe === timeframe ? "default" : "ghost"}
+                    className={
+                      selectedTimeframe === timeframe
+                        ? "border-purple-500/40 bg-purple-500/20 text-purple-300 hover:bg-purple-500/30"
+                        : "text-white/60 hover:bg-white/10 hover:text-white"
+                    }
+                    onClick={() => handleTimeframeChange(timeframe)}
+                    disabled={loadingSignal || !selectedPair}
+                  >
+                    {timeframe}
+                  </Button>
+                ))}
+              </div>
+            )}
+          </div>
+        ) : null}
 
         {/* Page Content */}
         {children}
