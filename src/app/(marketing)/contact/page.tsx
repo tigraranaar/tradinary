@@ -2,8 +2,10 @@
 
 import { useActionState, useEffect, useRef } from "react";
 import { useFormStatus } from "react-dom";
+import { toast } from "sonner";
 import PageTitle from "../components/page-title";
 import { submitContactForm, type ContactFormState } from "@/actions/contact";
+import { Input } from "@/components/ui/input";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -26,12 +28,24 @@ export default function ContactPage() {
   );
   const formRef = useRef<HTMLFormElement>(null);
 
-  // Reset form on success
+  // Reset form on success and show toasts
   useEffect(() => {
-    if (state?.success) {
+    if (!state) return;
+
+    if (state.success) {
       formRef.current?.reset();
+      if (state.message) {
+        toast.success(state.message);
+      }
+    } else {
+      // Show error toasts (prioritize _form errors, then general message)
+      if (state.errors?._form) {
+        toast.error(state.errors._form[0]);
+      } else if (state.message) {
+        toast.error(state.message);
+      }
     }
-  }, [state?.success]);
+  }, [state]);
 
   return (
     <main className="min-h-screen px-4 md:px-16 lg:px-24">
@@ -51,12 +65,11 @@ export default function ContactPage() {
                 <label htmlFor="name" className="mb-2 block text-sm font-medium">
                   Name
                 </label>
-                <input
+                <Input
                   type="text"
                   id="name"
                   name="name"
                   required
-                  className="w-full rounded-lg border border-white/20 bg-white/5 px-4 py-3 transition focus:ring-2 focus:ring-white/30 focus:outline-none"
                   placeholder="Your name"
                   aria-invalid={state?.errors?.name ? "true" : "false"}
                   aria-describedby={state?.errors?.name ? "name-error" : undefined}
@@ -72,12 +85,11 @@ export default function ContactPage() {
                 <label htmlFor="email" className="mb-2 block text-sm font-medium">
                   Email
                 </label>
-                <input
+                <Input
                   type="email"
                   id="email"
                   name="email"
                   required
-                  className="w-full rounded-lg border border-white/20 bg-white/5 px-4 py-3 transition focus:ring-2 focus:ring-white/30 focus:outline-none"
                   placeholder="your.email@example.com"
                   aria-invalid={state?.errors?.email ? "true" : "false"}
                   aria-describedby={state?.errors?.email ? "email-error" : undefined}
@@ -93,12 +105,11 @@ export default function ContactPage() {
                 <label htmlFor="subject" className="mb-2 block text-sm font-medium">
                   Subject
                 </label>
-                <input
+                <Input
                   type="text"
                   id="subject"
                   name="subject"
                   required
-                  className="w-full rounded-lg border border-white/20 bg-white/5 px-4 py-3 transition focus:ring-2 focus:ring-white/30 focus:outline-none"
                   placeholder="What is this about?"
                   aria-invalid={state?.errors?.subject ? "true" : "false"}
                   aria-describedby={state?.errors?.subject ? "subject-error" : undefined}
@@ -130,28 +141,6 @@ export default function ContactPage() {
                   </p>
                 )}
               </div>
-
-              {state?.message && (
-                <div
-                  className={`rounded-lg p-4 ${
-                    state.success
-                      ? "border border-green-500/30 bg-green-500/20 text-green-300"
-                      : "border border-red-500/30 bg-red-500/20 text-red-300"
-                  }`}
-                  role="alert"
-                >
-                  {state.message}
-                </div>
-              )}
-
-              {state?.errors?._form && (
-                <div
-                  className="rounded-lg border border-red-500/30 bg-red-500/20 p-4 text-red-300"
-                  role="alert"
-                >
-                  {state.errors._form[0]}
-                </div>
-              )}
 
               <SubmitButton />
             </form>
