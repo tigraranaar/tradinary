@@ -17,7 +17,7 @@ export default function ResetPasswordForm() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [verifying, setVerifying] = useState(true);
-  const { updateUser, session, loading: authLoading } = useAuth();
+  const { updateUser, signOut, session, loading: authLoading } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -103,9 +103,7 @@ export default function ResetPasswordForm() {
       setPassword("");
       setConfirmPassword("");
       toast.success("Password updated successfully! Please sign in with your new password.");
-      // Clear the recovery token from URL and redirect to login
-      // The recovery session should be invalidated automatically by Supabase
-      window.history.replaceState({}, "", "/auth/login");
+      await signOut();
       router.push("/auth/login");
     }
   };
