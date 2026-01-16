@@ -1,9 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
+import { supabase } from "@/lib/supabase/client";
 import { useAuth } from "@/contexts/auth-context";
 import { validatePasswordAndMatch } from "@/lib/auth/validation";
 import { Button } from "@/components/ui/button";
@@ -13,22 +15,75 @@ export default function ResetPasswordForm() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [verifying, setVerifying] = useState(true);
   const { updateUser, session, loading: authLoading } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
 
-  // Redirect if no valid session (no reset token)
+  // Handle recovery token from email link
   useEffect(() => {
-    if (!authLoading && !session) {
-      router.push("/auth/login");
-    }
-  }, [session, authLoading, router]);
+    const handleRecoveryToken = async () => {
+      const token = searchParams.get("token");
+      const type = searchParams.get("type");
+
+      if (token && type === "recovery") {
+        try {
+          setVerifying(true);
+
+          // Try to verify the recovery token
+          // Supabase recovery tokens can be verified using verifyOtp
+          const { data, error } = await supabase.auth.verifyOtp({
+            token_hash: token,
+            type: "recovery",
+          });
+
+          if (error) {
+            console.error("Token verification error:", error);
+            setError("Invalid or expired reset link. Please request a new one.");
+            setVerifying(false);
+            setTimeout(() => {
+              router.push("/auth/forgot-password");
+            }, 3000);
+            return;
+          }
+
+          if (data.session) {
+            // Session created successfully, refresh to update auth context
+            window.location.reload();
+          } else {
+            setError("Failed to verify reset link. Please try again.");
+            setVerifying(false);
+            setTimeout(() => {
+              router.push("/auth/forgot-password");
+            }, 3000);
+          }
+        } catch (err) {
+          console.error("Recovery token error:", err);
+          setError("Failed to verify reset link. Please try again.");
+          setVerifying(false);
+          setTimeout(() => {
+            router.push("/auth/forgot-password");
+          }, 3000);
+        }
+      } else if (!session && !authLoading) {
+        // No token and no session - redirect to login
+        setVerifying(false);
+        router.push("/auth/login");
+      } else if (session) {
+        // Already have a session
+        setVerifying(false);
+      } else {
+        setVerifying(false);
+      }
+    };
+
+    handleRecoveryToken();
+  }, [searchParams, session, authLoading, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    setSuccess(false);
 
     const validation = validatePasswordAndMatch(password, confirmPassword);
     if (!validation.isValid) {
@@ -44,13 +99,18 @@ export default function ResetPasswordForm() {
       setError(error.message);
       setLoading(false);
     } else {
-      setSuccess(true);
       setLoading(false);
+      setPassword("");
+      setConfirmPassword("");
+      toast.success("Password updated successfully! Please sign in with your new password.");
+      // Clear the recovery token from URL and redirect to login
+      // The recovery session should be invalidated automatically by Supabase
+      window.history.replaceState({}, "", "/auth/login");
       router.push("/auth/login");
     }
   };
 
-  if (authLoading) {
+  if (authLoading || verifying) {
     return (
       <motion.div
         className="w-full max-w-md"
@@ -59,10 +119,16 @@ export default function ResetPasswordForm() {
         transition={{ type: "spring", stiffness: 320, damping: 70 }}
       >
         <div className="glass rounded-2xl border border-white/20 p-8">
-          <div className="mb-4 text-center text-sm text-gray-300">Loading...</div>
+          <div className="mb-4 text-center text-sm text-gray-300">
+            {verifying ? "Verifying reset link..." : "Loading..."}
+          </div>
         </div>
       </motion.div>
     );
+  }
+
+  if (!session && !verifying) {
+    return null; // Will redirect
   }
 
   return (
@@ -97,16 +163,6 @@ export default function ResetPasswordForm() {
             animate={{ opacity: 1, scale: 1 }}
           >
             {error}
-          </motion.div>
-        )}
-
-        {success && (
-          <motion.div
-            className="mb-4 rounded-lg border border-green-500/50 bg-green-500/20 p-3 text-sm text-green-200"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-          >
-            Password updated successfully! Redirecting to login...
           </motion.div>
         )}
 
@@ -154,8 +210,8 @@ export default function ResetPasswordForm() {
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.5 }}
           >
-            <Button type="submit" variant="glass" disabled={loading || success} className="w-full">
-              {loading ? "Updating..." : success ? "Password Updated!" : "Update Password"}
+            <Button type="submit" variant="glass" disabled={loading} className="w-full">
+              {loading ? "Updating..." : "Update Password"}
             </Button>
           </motion.div>
         </form>

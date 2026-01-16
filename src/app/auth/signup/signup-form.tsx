@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { FaGoogle } from "react-icons/fa6";
+import { toast } from "sonner";
 import { useAuth } from "@/contexts/auth-context";
 import { validatePasswordAndMatch } from "@/lib/auth/validation";
 import { handleGoogleSignInError } from "@/lib/auth/google-signin";
@@ -18,14 +19,12 @@ export default function SignupForm() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
   const { signUp, signInWithGoogle } = useAuth();
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    setSuccess(false);
 
     const validation = validatePasswordAndMatch(password, confirmPassword);
     if (!validation.isValid) {
@@ -41,9 +40,11 @@ export default function SignupForm() {
       setError(error.message);
       setLoading(false);
     } else {
-      setSuccess(true);
       setLoading(false);
       router.push("/auth/login");
+      toast.success(
+        "Account created successfully! Please check your email to confirm your account."
+      );
     }
   };
 
@@ -103,16 +104,6 @@ export default function SignupForm() {
           </motion.div>
         )}
 
-        {success && (
-          <motion.div
-            className="mb-4 rounded-lg border border-green-500/50 bg-green-500/20 p-3 text-sm text-green-200"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-          >
-            Account created successfully! Redirecting to login...
-          </motion.div>
-        )}
-
         <motion.div
           initial={{ y: 10, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
@@ -123,7 +114,7 @@ export default function SignupForm() {
             type="button"
             variant="glass"
             onClick={handleGoogleSignIn}
-            disabled={googleLoading || loading || success}
+            disabled={googleLoading || loading}
             className="w-full"
           >
             <FaGoogle className="size-5" />
@@ -205,10 +196,10 @@ export default function SignupForm() {
             <Button
               type="submit"
               variant="glass"
-              disabled={loading || success || googleLoading}
+              disabled={loading || googleLoading}
               className="w-full"
             >
-              {loading ? "Creating account..." : success ? "Account Created!" : "Sign Up"}
+              {loading ? "Creating account..." : "Sign Up"}
             </Button>
           </motion.div>
         </form>

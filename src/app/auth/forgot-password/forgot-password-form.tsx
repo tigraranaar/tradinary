@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 import { useAuth } from "@/contexts/auth-context";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,14 +11,12 @@ import { Input } from "@/components/ui/input";
 export default function ForgotPasswordForm() {
   const [email, setEmail] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
   const { resetPassword } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
-    setSuccess(false);
     setLoading(true);
 
     const { error } = await resetPassword(email);
@@ -26,8 +25,9 @@ export default function ForgotPasswordForm() {
       setError(error.message);
       setLoading(false);
     } else {
-      setSuccess(true);
       setLoading(false);
+      setEmail("");
+      toast.success("Check your email for a password reset link!");
     }
   };
 
@@ -66,16 +66,6 @@ export default function ForgotPasswordForm() {
           </motion.div>
         )}
 
-        {success && (
-          <motion.div
-            className="mb-4 rounded-lg border border-green-500/50 bg-green-500/20 p-3 text-sm text-green-200"
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-          >
-            Check your email for a password reset link!
-          </motion.div>
-        )}
-
         <form onSubmit={handleSubmit} className="space-y-6">
           <motion.div
             initial={{ y: 10, opacity: 0 }}
@@ -100,8 +90,8 @@ export default function ForgotPasswordForm() {
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.4 }}
           >
-            <Button type="submit" variant="glass" disabled={loading || success} className="w-full">
-              {loading ? "Sending..." : success ? "Email Sent!" : "Send Reset Link"}
+            <Button type="submit" variant="glass" disabled={loading} className="w-full">
+              {loading ? "Sending..." : "Send Reset Link"}
             </Button>
           </motion.div>
         </form>

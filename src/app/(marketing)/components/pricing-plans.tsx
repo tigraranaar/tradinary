@@ -103,11 +103,12 @@ export default function PricingPlans() {
                 {item.buttonText}
               </Link>
             ) : (
-              <button
-                className={`btn mt-7 w-full rounded-md ${item.mostPopular ? "bg-white text-gray-800" : "glass"}`}
+              <Link
+                href={"/auth/login"}
+                className={`btn mt-7 w-full rounded-md ${item.mostPopular ? "bg-white text-gray-800" : "glass"} block text-center`}
               >
                 {item.buttonText}
-              </button>
+              </Link>
             )}
             <div className="mt-6 flex flex-col">
               {item.features.map((feature, index) => (
